@@ -10,8 +10,8 @@ const connectDB = async () => {
                 useUnifiedTopology: true
             }
         )
-    }catch(err){
-        console.log("DB Err" , err)
-    }
-}
-module.exports = connectDB
+//     }catch(err){
+//         console.log("DB Err" , err)
+//     }
+// }
+// module.exports = connectDB
