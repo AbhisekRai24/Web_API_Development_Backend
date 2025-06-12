@@ -13,4 +13,17 @@ exports.authenticateUser = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.SECRET) // verify with same secret
         const userId = decoded._id // from payload
         const user = await User.findOne({ _id: userId })
+          if (!user) {
+            return res.status(401).json(
+                { "success": false, "message": "User not found" }
+            )
+        }
+        req.user = user // create new object for next function to use
+        next() // continue to next function
+    } catch (err) {
+        return res.status(500).json(
+            { "success": false, "message": "Authentication error" }
+        )
+    }
+}
        
