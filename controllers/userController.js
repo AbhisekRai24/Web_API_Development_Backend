@@ -78,3 +78,26 @@ exports.loginUser = async (req, res) => {
                 { "success": false, "message": "Invalid credentials" }
             )
         }
+        const payload = {
+            "_id": getUser._id,
+            "email": getUser.email,
+            "username": getUser.username
+        }
+        const token = jwt.sign(payload, process.env.SECRET,
+            { expiresIn: "7d" }
+        )
+        return res.status(200).json(
+            {
+                "success": true,
+                "message": "Login Successful",
+                "data": getUser,
+                "token": token // return token in login
+            }
+        )
+    } catch (err) {
+        return res.status(500).json(
+            { "success": false, "message": "Server error" }
+        )
+    }
+}
+
