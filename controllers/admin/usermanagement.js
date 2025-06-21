@@ -97,7 +97,7 @@ exports.getOneUser = async (req, res) => {
 
 // 4 Update one
 exports.updateOne = async (req, res) => {
-    const { firstName, lastName } = req.body
+    const { username, firstName, lastName } = req.body
     const _id = req.params.id // mongodb id
     try {
         const user = await User.updateOne(
@@ -106,6 +106,7 @@ exports.updateOne = async (req, res) => {
             },
             {
                 $set: {
+                    "username": username,
                     "firstName": firstName,
                     "lastName": lastName
                 }
