@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoute");
 const adminCategoryRoutes = require("./routes/admin/categoryRouteAdmin")
 const adminProductRoutes = require("./routes/admin/productRouteAdmin")
+const adminUserRoutes = require("./routes/admin/userRouteAdmin")
 
 const cors = require("cors")
 const path = require("path")
@@ -26,6 +27,7 @@ connectDB();
 app.use("/api/auth", userRoutes);
 app.use("/api/admin/category", adminCategoryRoutes)
 app.use("/api/admin/product", adminProductRoutes)
+app.use("/api/admin/users", adminUserRoutes)
 
 
 const PORT = process.env.PORT || 5000;
