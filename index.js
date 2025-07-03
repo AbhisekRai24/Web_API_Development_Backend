@@ -6,6 +6,8 @@ const userRoutes = require("./routes/userRoute");
 const adminCategoryRoutes = require("./routes/admin/categoryRouteAdmin")
 const adminProductRoutes = require("./routes/admin/productRouteAdmin")
 const adminUserRoutes = require("./routes/admin/userRouteAdmin")
+const orderRoutes = require("./routes/orderRoutes")
+
 
 const cors = require("cors")
 const path = require("path")
@@ -23,11 +25,12 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 // Connect to DB
 connectDB();
 
-// login and register route is in here
+
 app.use("/api/auth", userRoutes);
 app.use("/api/admin/category", adminCategoryRoutes)
 app.use("/api/admin/product", adminProductRoutes)
 app.use("/api/admin/users", adminUserRoutes)
+app.use("/api/orders", orderRoutes);
 
 
 const PORT = process.env.PORT || 5000;

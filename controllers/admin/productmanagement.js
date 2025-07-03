@@ -1,7 +1,12 @@
+const fs = require("fs");
+const path = require("path");
 const Product = require("../../models/Product")
 
 exports.createProduct = async (req, res) => {
-    const { name, price, categoryId, userId } = req.body
+    const { name, price,description, categoryId, userId } = req.body
+    // const productImage = req.file ? req.file.filename : null; 
+    const productImage = req.file ? req.file.path : null;  
+
     // validataion
     if (!name || !price || !categoryId || !userId) {
         return res.status(403).json(
@@ -13,8 +18,10 @@ exports.createProduct = async (req, res) => {
             {
                 name,
                 price,
+                description,
                 categoryId,
-                sellerId: userId
+                sellerId: userId,
+                productImage
             }
         )
         await product.save()
@@ -84,4 +91,63 @@ exports.getProducts = async (req, res) => {
             { success: false, message: "Server error" }
         )
     }
+}
+
+exports.deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        // Delete the image file from disk (if it exists)
+        if (product.productImage) {
+            const imagePath = path.join(__dirname, "..", "..", "uploads", product.productImage);
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.warn("Image file deletion failed or not found:", err.message);
+                    // Not returning error here so deletion can proceed even if image missing
+                }
+            });
+        }
+
+        await product.deleteOne();
+
+        return res.json({
+            success: true,
+            message: "Product has been deleted"
+        });
+    } catch (err) {
+        console.error("Error deleting product:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+};
+
+exports.getProductsByCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.categoryId
+
+    const products = await Product.find({ categoryId })
+      .populate("categoryId", "name")
+      .populate("sellerId", "firstName email") // optional, for UI
+
+    return res.status(200).json({
+      success: true,
+      message: "Products fetched by category",
+      data: products
+    })
+  } catch (err) {
+    console.error("getProductsByCategory Error:", err)
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    })
+  }
 }
