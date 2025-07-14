@@ -37,6 +37,26 @@ describe(
                 expect(res.body.message).toBe("Missing fields")
             }
         )
+           test(
+            "can register user",
+            async () => {
+                const res = await request(app)
+                    .post("/api/auth/register")
+                    .send(
+                        {
+                            firstName: "ab",
+                            lastName: "rai",
+                            username: "aa",
+                            email: "ab@gmail.com",
+                            password: "password"
+                        }
+                    )
+                expect(res.statusCode).toBe(201)
+                expect(res.body.success).toBe(true)
+            }
+        )
+
+
 
         
      
