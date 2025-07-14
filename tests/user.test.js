@@ -55,6 +55,26 @@ describe(
                 expect(res.body.success).toBe(true)
             }
         )
+                test(
+            "can login user with valid credentials",
+            async () => {
+                const res = await request(app)
+                    .post("/api/auth/login")
+                    .send(
+                        {
+                            email: "ab@gmail.com",
+                            password: "password"
+                        }
+                    )
+                expect(res.statusCode).toBe(200)
+                expect(res.body.success).toBe(true)
+                expect(res.body.token).toEqual(expect.any(String))
+                authToken = res.body.token
+            }
+        )
+    }
+)
+
 
 
 
