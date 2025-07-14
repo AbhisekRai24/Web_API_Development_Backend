@@ -22,7 +22,7 @@ describe(
         test(
             "validates the registration form",
             async () => {
-               
+
                 const res = await request(app)
                     .post("/api/auth/register")
                     .send(
@@ -31,13 +31,13 @@ describe(
                             email: "ab01@gmail.com"
                         }
                     )
-               
+
                 expect(res.statusCode).toBe(400)
                 expect(res.body.success).toBe(false)
                 expect(res.body.message).toBe("Missing fields")
             }
         )
-           test(
+        test(
             "can register user",
             async () => {
                 const res = await request(app)
@@ -55,7 +55,7 @@ describe(
                 expect(res.body.success).toBe(true)
             }
         )
-                test(
+        test(
             "can login user with valid credentials",
             async () => {
                 const res = await request(app)
@@ -74,10 +74,32 @@ describe(
         )
     }
 )
+describe(
+    "Authenticated Admin routes",
+    () => {
+        beforeAll(async () => {
+            await User.updateOne(
+                { email: "ab@gmail.com" },
+                { $set: { role: "admin" } }
+            )
+        })
+        test(
+            "can get users as admin with token",
+            async () => {
+                const res = await request(app)
+                    .get("/api/admin/users")
+                    .set("Authorization", "Bearer " + authToken)
+
+                expect(res.statusCode).toBe(200)
+                expect(res.body.success).toBe(true)
+            }
+        )
+    }
 
 
 
 
-        
-     
+
+
+
 )
