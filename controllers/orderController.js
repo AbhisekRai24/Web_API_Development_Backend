@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const Notification = require("../models/Notification");
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -36,6 +37,9 @@ exports.getOrdersByUser = async (req, res) => {
     res.status(500).json({ message: "Error fetching user's orders", error });
   }
 };
+
+
+
 exports.updateOrderStatus = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -49,6 +53,19 @@ exports.updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
+
+    // Create notification message
+    const message = `Your order #${order._id} status changed to ${status}`;
+
+    // Save notification to DB
+    const notification = await Notification.create({
+      userId: order.userId,
+      message,
+    });
+
+    // Emit real-time event using global.io
+    global.io.to(order.userId.toString()).emit("orderStatusUpdated", notification);
+
     res.json({ message: "Order status updated", order });
   } catch (err) {
     res.status(500).json({ message: err.message });
