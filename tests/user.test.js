@@ -255,5 +255,29 @@ describe("Admin Route Tesing", () => {
         expect(res.body.message).toBe("User not found");
     });
 
+    
+    test("Update user profile info", async () => {
+        const res = await request(app).put(`/api/auth/${userId}`).send({
+            firstName: "updated",
+            lastName: "last"
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.data.firstName).toBe("updated");
+    });
+
+    test("Update user with empty body succeeds (no-op)", async () => {
+        const res = await request(app).put(`/api/auth/${userId}`).send({});
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+    });
+
+    test("Update non-existing user fails", async () => {
+        const res = await request(app).put(`/api/auth/000000000000000000000000`).send({
+            firstName: "None"
+        });
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("User not found");
+    });
+
 
 });
