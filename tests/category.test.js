@@ -72,6 +72,30 @@ describe("Category API", () => {
         expect(res.body.success).toBe(true);
         expect(res.body.data.name).toBe("SingleCategory");
     });
+    
+    test("Update category", async () => {
+        const category = await Category.create({ name: "OldName" });
+
+        const res = await request(app)
+            .put(`/api/admin/category/${category._id}`)
+            .field("name", "NewName");
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.data.name).toBe("NewName");
+    });
+
+    test("Delete category", async () => {
+        const category = await Category.create({ name: "ToDelete" });
+
+        const res = await request(app).delete(`/api/admin/category/${category._id}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+
+        const found = await Category.findById(category._id);
+        expect(found).toBeNull();
+    });
 
 });
 
