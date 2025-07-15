@@ -213,6 +213,46 @@ describe("Admin Route Tesing", () => {
         });
         expect(res.statusCode).toBe(403);
         expect(res.body.message).toBe("Invalid credentials");
+    });    test("Successful login", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "ab@gmail.com",
+            password: "password123"
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.token).toEqual(expect.any(String));
+        authToken = res.body.token;
+        userId = res.body.data._id;
+    });
+    test("Login response includes expected user data", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "ab@gmail.com",
+            password: "password123"
+        });
+        const user = res.body.data;
+        expect(user).toHaveProperty("email", "ab@gmail.com");
+        expect(user).toHaveProperty("username");
+        expect(user).not.toHaveProperty("password");
+    });
+
+    test("Get user by ID", async () => {
+        const res = await request(app).get(`/api/auth/${userId}`);
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.data.email).toBe("ab@gmail.com");
+        expect(res.body.data).not.toHaveProperty("password");
+    });
+
+    test("Fail to get user with invalid ID", async () => {
+        const res = await request(app).get(`/api/auth/invalid-id`);
+        expect(res.statusCode).toBe(500);
+        expect(res.body.message).toBe("Server error");
+    });
+
+    test("Fail to get user with non-existent ID", async () => {
+        const res = await request(app).get(`/api/auth/000000000000000000000000`);
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("User not found");
     });
 
 
