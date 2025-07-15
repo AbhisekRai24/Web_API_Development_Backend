@@ -57,7 +57,7 @@ exports.createUser = async (req, res) => {
 // 2 Get all/ Read All
 exports.getUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().select("-password");
         return res.status(200).json(
             {
                 "success": true,
