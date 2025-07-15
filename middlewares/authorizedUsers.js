@@ -31,7 +31,7 @@ exports.isAdmin = (req, res, next) => {
         next()
     } else {
         return res.status(403).json(
-            { "success": false, "message": "Access denied, not admin" }
+            { "success": false, "message": "Access denied, User is not admin!" }
         )
     }
 }
