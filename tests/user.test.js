@@ -188,4 +188,32 @@ describe("Admin Route Tesing", () => {
         expect(res.statusCode).toBe(403);
         expect(res.body.message).toBe("Access denied, User is not admin!");
     });
+    
+    test("Login fails with no password", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "ab@gmail.com"
+        });
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Missing field");
+    });
+
+    test("Login fails with non-existent user", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "nouser@test.com",
+            password: "password123"
+        });
+        expect(res.statusCode).toBe(403);
+        expect(res.body.message).toBe("User not found");
+    });
+
+    test("Login fails with wrong password", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "ab@gmail.com",
+            password: "wrongpassword"
+        });
+        expect(res.statusCode).toBe(403);
+        expect(res.body.message).toBe("Invalid credentials");
+    });
+
+
 });
