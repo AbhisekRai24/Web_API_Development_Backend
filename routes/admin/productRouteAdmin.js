@@ -12,6 +12,12 @@ router.get(
     "/",
     productController.getProducts
 )
+
+router.get("/:id", productController.getProductById);
+
+
+router.put("/:id", upload.single("productImage"), productController.updateProduct);
+
 router.delete('/:id', productController.deleteProduct);
 router.get("/category/:categoryId", productController.getProductsByCategory)
 

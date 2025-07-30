@@ -1,33 +1,48 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        description: {
-            type: String
-        },
-        categoryId: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Category',
-            required: true
-        },
-        sellerId: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'User',
-            required: true
-        },
+const addonSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+});
 
-        productImage: { type: String }
-    }
-)
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
 
-module.exports = mongoose.model(
-    'Product', productSchema
-)
+  price: {
+    type: Number,
+    required: true,
+  },
+
+  description: {
+    type: String,
+  },
+
+  categoryId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Category',
+    required: true,
+  },
+
+  sellerId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+
+  productImage: {
+    type: String,
+  },
+
+  addons: [addonSchema], // <-- add-on options defined by admin
+});
+
+module.exports = mongoose.model('Product', productSchema);
