@@ -1,26 +1,25 @@
 
-
-
 const request = require("supertest");
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
-const app = require("../index"); // your Express app
+// const app = require("../index"); // your Express app
+const { app } = require("../index");
 const Category = require("../models/Category");
 
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
 
-  if (mongoose.connection.readyState !== 0) {
-    await mongoose.disconnect();
-  }
+    if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
+    }
 
-  await mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+    await mongoose.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
 });
 afterAll(async () => {
     await mongoose.disconnect();
@@ -72,7 +71,7 @@ describe("Category API", () => {
         expect(res.body.success).toBe(true);
         expect(res.body.data.name).toBe("SingleCategory");
     });
-    
+
     test("Update category", async () => {
         const category = await Category.create({ name: "OldName" });
 
@@ -98,5 +97,3 @@ describe("Category API", () => {
     });
 
 });
-
-

@@ -5,6 +5,61 @@ const nodemailer = require("nodemailer")
 const fs = require("fs");
 const path = require("path");
 
+// Email Transporter Setup
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+// Send Reset Link
+exports.sendResetLink = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const token = jwt.sign({ id: user._id }, process.env.SECRET, {
+            expiresIn: "15m",
+        });
+
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
+
+        const mailOptions = {
+            from: `"Your App" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: "Reset your password",
+            html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>
+             <p>This link expires in 15 minutes.</p>`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ success: true, message: "Reset email sent" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+// Reset Password
+exports.resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET);
+        const hashed = await bcrypt.hash(password, 10);
+        await User.findByIdAndUpdate(decoded.id, { password: hashed });
+
+        res.status(200).json({ success: true, message: "Password updated" });
+    } catch (err) {
+        res.status(400).json({ success: false, message: "Invalid or expired token" });
+    }
+};
+
+
 exports.registerUser = async (req, res) => {
     const { username, email, firstName, lastName, password } = req.body;
     const profileImage = req.file ? req.file.path : null;
