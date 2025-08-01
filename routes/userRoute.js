@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const upload = require("../middlewares/fileupload")
-const { registerUser, loginUser ,getUser , updateUser } = require("../controllers/userController") 
+const { registerUser, loginUser ,getUser , updateUser , resetPassword, sendResetLink } = require("../controllers/userController") 
 
 router.post(
     "/register",
@@ -23,4 +23,8 @@ router.put(
   upload.single("profileImage"),
   updateUser
 );
+
+router.post("/request-reset", sendResetLink);
+router.post("/reset-password/:token", resetPassword);
+
 module.exports = router

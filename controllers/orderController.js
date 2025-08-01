@@ -3,7 +3,24 @@ const Notification = require("../models/Notification");
 
 exports.placeOrder = async (req, res) => {
   try {
-    const { userId, products, total , orderType} = req.body;
+    const { userId, products, total, orderType } = req.body;
+
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ message: "Products are required" });
+    }
+
+    for (const p of products) {
+      if (!p._id || !p.quantity || !p.price) {
+        return res.status(400).json({ message: "Invalid product data" });
+      }
+      if (p.addons) {
+        for (const a of p.addons) {
+          if (!a.addonId || !a.price || !a.quantity) {
+            return res.status(400).json({ message: "Invalid addon data" });
+          }
+        }
+      }
+    }
 
     const newOrder = new Order({
       userId,
@@ -15,9 +32,11 @@ exports.placeOrder = async (req, res) => {
     const savedOrder = await newOrder.save();
     res.status(201).json(savedOrder);
   } catch (error) {
+    console.error("Order creation error:", error);
     res.status(500).json({ message: "Error placing order", error });
   }
 };
+
 
 exports.getAllOrders = async (req, res) => {
   try {

@@ -50,8 +50,11 @@ const userRoutes = require("./routes/userRoute");
 const adminCategoryRoutes = require("./routes/admin/categoryRouteAdmin");
 const adminProductRoutes = require("./routes/admin/productRouteAdmin");
 const adminUserRoutes = require("./routes/admin/userRouteAdmin");
+const bannerRoutes = require("./routes/admin/bannerRoute");
 const orderRoutes = require("./routes/orderRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const esewaRoutes = require('./routes/esewaRoute');
+
 
 
 const app = express();
@@ -94,10 +97,9 @@ app.use("/api/admin/category", adminCategoryRoutes);
 app.use("/api/admin/product", adminProductRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin/banner", bannerRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use('/api/esewa', esewaRoutes);
 
-// 🚀 Start Server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+module.exports = { app, server };
+
