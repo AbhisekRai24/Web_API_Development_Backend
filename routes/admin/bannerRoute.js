@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
         cb(null, "uploads/"); // folder for uploaded images
     },
     filename: (req, file, cb) => {
-        // prepend timestamp to original filename
+
         cb(null, Date.now() + "_" + file.originalname);
     },
 });
