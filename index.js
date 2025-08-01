@@ -50,6 +50,7 @@ const userRoutes = require("./routes/userRoute");
 const adminCategoryRoutes = require("./routes/admin/categoryRouteAdmin");
 const adminProductRoutes = require("./routes/admin/productRouteAdmin");
 const adminUserRoutes = require("./routes/admin/userRouteAdmin");
+const bannerRoutes = require("./routes/admin/bannerRoute");
 const orderRoutes = require("./routes/orderRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const esewaRoutes = require('./routes/esewaRoute');
@@ -96,6 +97,7 @@ app.use("/api/admin/category", adminCategoryRoutes);
 app.use("/api/admin/product", adminProductRoutes);
 app.use("/api/admin/users", adminUserRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin/banner", bannerRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/esewa', esewaRoutes);
 
